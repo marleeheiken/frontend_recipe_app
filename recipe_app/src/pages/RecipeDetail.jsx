@@ -51,7 +51,6 @@ export default function RecipeDetail() {
   if (error) return <div className="container"><p style={{ color: 'red' }}>{error}</p></div>;
   if (!meal) return <div className="container"><p>Meal not found</p></div>;
 
-  // Extract ingredients and measures
   const ingredients = [];
   for (let i = 1; i <= 20; i++) {
     const ingredient = meal[`strIngredient${i}`];

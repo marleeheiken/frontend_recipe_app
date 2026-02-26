@@ -1,13 +1,28 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
 export default function RecipeCard({ recipe }) {
   const { favorites, addFavorite, removeFavorite } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const mealId = recipe.idMeal || recipe.id;
+  console.log('recipe:', recipe, 'mealId:', mealId);
+
   const [isFavorited, setIsFavorited] = useState(
     favorites.some((fav) => fav.idMeal === recipe.idMeal)
   );
 
-  const handleToggleFavorite = () => {
+  const handleCardClick = () => {
+    if (mealId) {
+      navigate(`/recipe/${mealId}`);
+    } else {
+      console.warn('No meal ID found on recipe:', recipe);
+    }
+  };
+
+  const handleToggleFavorite = (e) => {
+    e.stopPropagation();
     if (isFavorited) {
       removeFavorite(recipe.idMeal);
       setIsFavorited(false);
@@ -18,7 +33,11 @@ export default function RecipeCard({ recipe }) {
   };
 
   return (
-    <div className="card" style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div
+      onClick={handleCardClick}
+      className="card"
+      style={{ position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden', cursor: 'pointer' }}
+    >
       {recipe.strMealThumb && <img src={recipe.strMealThumb} alt={recipe.strMeal} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} />}
       {!recipe.strMealThumb && <div className="placeholder" style={{ flex: 1 }}></div>}
       <div style={{ padding: '0.75rem' }}>
