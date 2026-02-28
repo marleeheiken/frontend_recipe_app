@@ -11,7 +11,7 @@
   --color-accent: #8aab7e; /* sage green */
   --color-accent-dark: #6f8e5a;
   --color-muted: #888;
-  --color-nav-bg: #eee;
+  --color-nav-bg: #e3e3e3;
   --color-card-bg: #fcfcfc;
 
   color-scheme: light dark;
@@ -32,6 +32,17 @@ a {
 a:hover {
   color: var(--color-accent);
 }
+/* RecipeHub navbar link styling */
+.navbar > a {
+  color: inherit;
+}
+.navbar > a:hover {
+  color: inherit;
+}
+.navbar h1 {
+  font-size: 1.8em;
+  margin: 0;
+} 
 
 .navbar {
   background-color: var(--color-nav-bg);
@@ -119,16 +130,37 @@ a:hover {
   padding: 1rem;
   box-sizing: border-box;
 }
+/* mobile-first grid: start at one column for phones */
 .grid-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 }
+/* tablet: three columns */
+@media (min-width: 768px) {
+  .grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+/* desktop: four columns */
+@media (min-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* similar mobile-first rules for grid-3 */
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 }
+@media (min-width: 768px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .two-column {
   display: flex;
   gap: 1rem;
@@ -194,7 +226,6 @@ input[type="password"] {
 
 body {
   margin: 0;
-  /* no padding here; navbar and page content handle spacing */
   display: block;
   min-width: 320px;
   min-height: 100vh;
@@ -230,9 +261,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -254,11 +283,11 @@ button:focus-visible {
 /* Mobile-first responsive design */
 @media (max-width: 768px) {
   body {
-    padding: 2rem 1rem;
+    padding: 1rem;
   }
 
   .page-content {
-    padding: 2rem 0.5rem;
+    padding: 1rem 0.5rem;
   }
 
   h1 {
@@ -277,13 +306,7 @@ button:focus-visible {
     flex-direction: column;
   }
 
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  /* grids default to one column on phones; column count controlled by min-width queries above */
 
   .two-column {
     flex-direction: column;
@@ -304,11 +327,11 @@ button:focus-visible {
 
 @media (max-width: 480px) {
   body {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .page-content {
-    padding: 1rem 0;
+    padding: 0.5rem 0.25rem;
   }
 
   h1 {
@@ -325,14 +348,6 @@ button:focus-visible {
 
   p {
     font-size: 0.95rem;
-  }
-
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .grid-3 {
-    grid-template-columns: 1fr;
   }
 
   .filter-bar {

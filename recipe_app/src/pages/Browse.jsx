@@ -19,11 +19,11 @@ export default function Home() {
         // Fetch meals by category
         if (activeCategory === 'All') {
           // Fetch a few random meals for demo
-          const categoryMeals = await filterByCategory('Vegetarian');
-          setMeals(categoryMeals.slice(0, 8));
+          const categoryMeals = await filterByCategory('Chicken');
+          setMeals(categoryMeals.slice(0, 20));
         } else {
           const categoryMeals = await filterByCategory(activeCategory);
-          setMeals(categoryMeals.slice(0, 8));
+          setMeals(categoryMeals.slice(0, 20));
         }
         setError('');
       } catch (err) {
@@ -55,51 +55,62 @@ export default function Home() {
   };
 
   return (
-    <div className="container">
-      <section className="hero two-column" style={{ alignItems: 'center' }}>
-        <div className="sidebar" style={{ textAlign: 'left' }}>
-          <span className="pill" style={{ background: 'var(--color-accent)', color: 'white', marginBottom: '1rem' }}>
-            Healthy Recipes
-          </span>
-          <h1 style={{ fontSize: '4rem', margin: '1rem 0' }}>
-            Eat Well, <span style={{ textDecoration: 'underline 6px #82a179' }}>Feel Better</span>
-          </h1>
-          <p style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>Discover nourishing meals that fit your lifestyle.</p>
-          <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', marginTop: '2rem' }}>
+    <div className="container2">
+        <section
+        style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '3rem 1rem'
+        }}
+        >
+        <h1 style={{ 
+            marginTop: 0,
+            marginBottom: '1.5rem',
+            fontSize: '4rem'
+            }}>
+            Plan Your Next Meal
+        </h1>
+
+        <form
+            onSubmit={handleSearchSubmit}
+            style={{
+            display: 'flex',
+            gap: '0.5rem',
+            marginBottom: '1.5rem',
+            width: '40%',
+            }}
+        >
             <input
-              type="text"
-              placeholder="search recipes, ingredients..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search recipes, ingredients..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             />
             <button className="button-accent" type="submit">
-              Search
+            Search
             </button>
-          </form>
-        </div>
-        <div className="main">
-          <div className="placeholder" style={{ height: '300px' }}></div>
-        </div>
-      </section>
+        </form>
 
-      <div className="filter-bar">
-        <span style={{ fontSize: '1.25rem'}} >Filter:</span>
-        {DEMO_CATEGORIES.map((cat) => (
-          <span
-            style={{ fontSize: '1.1rem'}}
-            key={cat}
-            className={`pill ${activeCategory === cat ? 'active' : ''}`}
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat}
-          </span>
-        ))}
-      </div>
+        <div className="filter-bar" style={{ marginTop: '1rem' }}>
+            <span style={{ marginRight: '0.5rem' }}>Filter:</span>
+            {DEMO_CATEGORIES.map((cat) => (
+            <span
+                key={cat}
+                className={`pill ${activeCategory === cat ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat)}
+            >
+                {cat}
+            </span>
+            ))}
+        </div>
+        </section>
 
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
       <section>
-        <h2>Popular This Week</h2>
         {loading && <p style={{ textAlign: 'center', fontSize: '1.1rem' }}>Loading meals...</p>}
         {!loading && (
           <div className="grid-4">

@@ -8,8 +8,12 @@ export default function Nav() {
   return (
     <nav className="navbar">
       <ul className="nav-list">
+         <li>
+          <Link to="/">Home</Link>
+        </li>
+        
         <li>
-          <Link to="/">Browse</Link>
+          <Link to="/browse">Browse</Link>
         </li>
         <li>
           <Link to="/favorites">Favorites</Link>
@@ -27,14 +31,10 @@ export default function Nav() {
           </>
         ) : (
           <>
-            <li>
-              <Link to="/login" className="sign-in-link">
-                Sign In
-              </Link>
-            </li>
+
             <li>
               <Link to="/login" className="sign-up-button">
-                Sign Up
+                Sign in
               </Link>
             </li>
           </>
