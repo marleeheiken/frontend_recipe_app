@@ -160,9 +160,6 @@ export default function Login() {
               </button>
             </p>
             <p><strong>Demo:</strong> choose a role when registering to test access levels.</p>
-            <p>
-              Deep links: <Link to="/login">/login</Link> and <Link to="/register">/register</Link>
-            </p>
           </div>
         </div>
       </div>
