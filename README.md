@@ -1,113 +1,179 @@
-# RecipeHub — Healthy Recipe Browser
+# RecipeHub Frontend
 
-RecipeHub is a single‑page application that lets users search, browse, and save recipes. It integrates with the free [TheMealDB](https://www.themealdb.com/) API and provides basic authentication and favorites management.
+RecipeHub is a React single-page app for discovering meals, viewing recipe details, and saving favorites by account.  
+It demonstrates authenticated routing, role-based access control (regular/admin), and client-side security guardrails.
 
+Live deployment: https://frontend-recipe-app-indol.vercel.app/
 
-Vercel Deployment URL: https://frontend-recipe-app-indol.vercel.app/ 
+## Problem Statement
 
-**Home Page**
+Users need one place to:
+- Search and browse healthy meal ideas.
+- Save personal favorites.
+- Access role-based functionality (admin visibility into all users' saved recipes).
 
-<img src="recipe_app/public/home.png" alt=" Home Page" width="400"/>
+## Core Features
 
+- Home and browse experiences backed by TheMealDB API.
+- Recipe detail page with ingredient checklist and save/remove favorite controls.
+- Authentication system with:
+  - Registration and login forms.
+  - Role selection (`regular` or `admin`) at registration.
+  - JWT-like session token creation and expiration handling.
+  - Logout with session cleanup.
+- Protected routes:
+  - `/favorites` requires authentication.
+  - `/saved` requires admin role.
+- Admin dashboard that displays all users' saved recipes.
+- Auth feedback states (validation errors, failed auth, account creation success).
 
-**Browse Page**
+## Security Notes
 
-<img src="recipe_app/public/browse.png" alt=" Browse More Recipes Page" width="400"/>
+This is a frontend-only project, so security is best-effort and educational:
 
+- XSS mitigation:
+  - User-entered auth/search strings are sanitized before use.
+  - React escaping is preserved (no `dangerouslySetInnerHTML`).
+- CSRF mitigation:
+  - A per-session CSRF token is generated in auth context.
+  - Auth form submissions include and validate that token.
+- Token handling:
+  - Session token is stored in `sessionStorage` (not persisted across browser restarts).
+  - Token expiration is validated on boot and scheduled for auto-logout.
+  - Logout clears token/user session data.
 
-**Favorites Page**
+## Tech Stack
 
-<img src="recipe_app/public/saved.png" alt=" Favorites Page" width="400"/>
+- React 19
+- Vite 7
+- React Router DOM 7
+- Vitest + Testing Library + JSDOM
+- CSS (custom styles)
+- TheMealDB API
 
+## Project Structure
 
-**Sign In Page**
+- App source: `recipe_app/src`
+- Contexts:
+  - `src/contexts/AuthContext.jsx`
+  - `src/contexts/FavoritesContext.jsx`
+- Security/auth helpers:
+  - `src/utils/security.js`
+  - `src/utils/authApi.js`
+- Routes/pages:
+  - `src/pages/*`
 
-<img src="recipe_app/public/sign-in.png" alt=" Sign In Page" width="400"/>
+## Setup and Installation
 
-
-## Features
-
-- Browse meals by category or search by name
-- View detailed recipe instructions and ingredients
-- Save favorite recipes
-- (Future) Mock authentication (login form with client‑side validation)
-- Responsive layout 
-- State management via `useState` and React Context
-- Fully tested with Vitest and React Testing Library
-
-## Technologies Used
-
-- React 19 (Vite template)
-- React Router v6
-- Vitest & React Testing Library
-- CSS variables, Flexbox & Grid for layout
-- TheMealDB public API (free, key stored in `.env`)
-
-## Getting Started
-
-1. **Clone the repo**
+1. Clone repository:
    ```bash
    git clone https://github.com/marleeheiken/frontend_recipe_app.git
    cd frontend_recipe_app/recipe_app
    ```
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    npm install
    ```
-3. **Environment variables**
-   Create a `.env` file in the project root with:
+3. Create `.env` in `recipe_app` root:
    ```env
    VITE_MEALDB_KEY=1
    ```
-   (the default key `1` is the public test key)
-
-4. **Run the dev server**
+4. Run locally:
    ```bash
    npm run dev
    ```
-   Visit `http://localhost:5173` in your browser.
-
-5. **Run tests**
+5. Build for production:
    ```bash
-   npm run test
+   npm run build
    ```
 
-## Application Routes
+## Authentication Documentation
 
-| Path | Description |
-|------|-------------|
-| `/` | Home page with search and category filters |
-| `/browse` | View more recipes at a time |
-| `/recipe/:id` | Recipe detail view |
-| `/favorites` | List of saved favorite recipes |
-| `/login` | Sign in/sign up form (mocked) |
-| any other | 404 Not Found page |
+`AuthContext` owns auth state and exposes:
 
-## API Endpoints Used
+- `register({ email, password, role, csrf })`
+- `login({ email, password, role, csrf })`
+- `logout()`
+- `isAuthenticated`
+- `hasRole(role)`
+- `csrfToken`
 
-All network requests are made via helper functions in `src/utils/api.js`.
+Flow summary:
 
-- `searchMeals(query)` → `/search.php?s={query}`
-- `filterByCategory(category)` → `/filter.php?c={category}`
-- `getMealById(id)` → `/lookup.php?i={id}`
-- `listCategories()` → `/categories.php`
+1. Register stores user credentials in a local mock user store.
+2. Login verifies credentials and returns a JWT-like token.
+3. Session (`user + token`) is saved to `sessionStorage`.
+4. Token expiration is enforced at startup and via logout timer.
+5. Protected routes redirect unauthenticated/unauthorized users.
 
-The `VITE_MEALDB_KEY` environment variable is appended to every request by the Vite proxy.
+## API Integration Documentation
 
+All API calls are centralized in `src/utils/api.js`:
+
+- `searchMeals(query)`
+- `getMealById(id)`
+- `filterByCategory(category)`
+- `listCategories()`
+
+Base URL uses `VITE_MEALDB_KEY`:
+
+`https://www.themealdb.com/api/json/v1/${VITE_MEALDB_KEY}`
 
 ## Testing
 
-The project uses Vitest with JSDOM. There are tests covering:
+Test command:
 
-- API utilities (`src/utils/__tests__/api.test.js`)
-- Component rendering and user interactions (`Home`, `RecipeDetail`, `Login`, `Header`)
-- Context logic is indirectly verified by mocking `AuthContext` in component tests.
+```bash
+npm run test -- --run
+```
 
-Run `npm run test` to execute the suite; all tests pass as of this commit.
+Coverage includes:
+
+- API utility behavior and endpoint construction.
+- Security utility functions.
+- Auth service and AuthContext flows.
+- Login/register form validation and feedback.
+- Protected route access behavior.
+- Existing page/component behavior (Home, Header, RecipeDetail).
+
+## Deployment Process and Environment Configuration
+
+This app is deployed via Vercel.
+
+Recommended deployment steps:
+
+1. Push to GitHub.
+2. Import repo in Vercel.
+3. Set environment variables:
+   - `VITE_MEALDB_KEY=1` (or your own key)
+4. Trigger build using:
+   - Install: `npm install`
+   - Build: `npm run build`
+5. Verify protected routes and auth flows in deployed app.
+
+## Screenshots
+
+Home  
+<img src="recipe_app/public/home.png" alt="Home page" width="400" />
+
+Browse  
+<img src="recipe_app/public/browse.png" alt="Browse page" width="400" />
+
+Favorites  
+<img src="recipe_app/public/saved.png" alt="Favorites page" width="400" />
+
+Sign In  
+<img src="recipe_app/public/sign-in.png" alt="Sign in page" width="400" />
+
+## Known Issues
+
+- Local environment currently uses Node `20.11.0`; Vite recommends `20.19+` or `22.12+`.
+- In this environment, Vitest worker startup fails with a dependency ESM/CJS mismatch (`ERR_REQUIRE_ESM` from `html-encoding-sniffer`). Updating Node resolves this.
+- Frontend-only auth cannot provide true backend-grade security (no HttpOnly cookies/server-side session revocation).
 
 ## Future Enhancements
 
-- Authinitcation and authorization to view your favorited meals or all if youre an admin
-- Fixes involved with spacing when adjusting screen size
-
-
+- Replace mock auth store with real backend auth and refresh-token flow.
+- Add server-issued CSRF tokens and HttpOnly cookie strategy.
+- Expand automated coverage reporting thresholds in CI.
+- Improve responsive spacing and accessibility polish.

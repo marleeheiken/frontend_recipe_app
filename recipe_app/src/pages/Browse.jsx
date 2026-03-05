@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import RecipeCard from '../components/RecipeCard';
-import { searchMeals, filterByCategory, listCategories } from '../utils/api';
+import { searchMeals, filterByCategory } from '../utils/api';
+import { sanitizeText } from '../utils/security';
 
 const DEMO_CATEGORIES = ['All', 'Vegetarian', 'Seafood', 'Chicken', 'Beef'];
 
-export default function Home() {
+export default function Browse() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [meals, setMeals] = useState([]);
@@ -39,11 +40,12 @@ export default function Home() {
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    if (!search.trim()) return;
+    const safeQuery = sanitizeText(search);
+    if (!safeQuery) return;
 
     setLoading(true);
     try {
-      const results = await searchMeals(search);
+      const results = await searchMeals(safeQuery);
       setMeals(results.slice(0, 8));
       setError('');
     } catch (err) {

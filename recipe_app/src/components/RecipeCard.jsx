@@ -8,7 +8,6 @@ export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
 
   const mealId = recipe.idMeal || recipe.id;
-  console.log('recipe:', recipe, 'mealId:', mealId);
 
   const favorited = isFavorite(recipe.idMeal);
 

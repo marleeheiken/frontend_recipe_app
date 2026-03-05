@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../../contexts/AuthContext';
+import { FavoritesProvider } from '../../contexts/FavoritesContext';
 import RecipeDetail from '../../pages/RecipeDetail';
 import * as apiModule from '../../utils/api';
 
@@ -26,9 +27,11 @@ describe('RecipeDetail page', () => {
     render(
       <MemoryRouter initialEntries={["/recipe/1"]}>
         <AuthProvider>
-          <Routes>
-            <Route path="/recipe/:id" element={<RecipeDetail />} />
-          </Routes>
+          <FavoritesProvider>
+            <Routes>
+              <Route path="/recipe/:id" element={<RecipeDetail />} />
+            </Routes>
+          </FavoritesProvider>
         </AuthProvider>
       </MemoryRouter>
     );

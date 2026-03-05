@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider, AuthContext } from '../../contexts/AuthContext';
+import { AuthProvider } from '../../contexts/AuthContext';
+import { FavoritesProvider } from '../../contexts/FavoritesContext';
 import Home from '../../pages/Home';
 import * as apiModule from '../../utils/api';
 
@@ -9,7 +10,9 @@ vi.mock('../../utils/api');
 function renderWithAuth(ui) {
   return render(
     <BrowserRouter>
-      <AuthProvider>{ui}</AuthProvider>
+      <AuthProvider>
+        <FavoritesProvider>{ui}</FavoritesProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
