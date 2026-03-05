@@ -154,26 +154,26 @@ Recommended deployment steps:
 ## Screenshots
 
 Home  
-<img src="recipe_app/public/home.png" alt="Home page" width="400" />
+<img src="recipe_app/public/FinalHome.png" alt="Home page" width="400" />
 
 Browse  
-<img src="recipe_app/public/browse.png" alt="Browse page" width="400" />
-
-Favorites  
-<img src="recipe_app/public/saved.png" alt="Favorites page" width="400" />
+<img src="recipe_app/public/FinalBrowse.png" alt="Browse page" width="400" />
 
 Sign In  
-<img src="recipe_app/public/sign-in.png" alt="Sign in page" width="400" />
+<img src="recipe_app/public/FinalSignIn.png" alt="Sign in page" width="400" />
+
+Favorites  
+<img src="recipe_app/public/FinalFavorites.png" alt="Favorites page" width="400" />
+
+Admin All Saved  
+<img src="recipe_app/public/Admin.png" alt="Sign in page" width="400" />
+
+
 
 ## Known Issues
 
-- Local environment currently uses Node `20.11.0`; Vite recommends `20.19+` or `22.12+`.
-- In this environment, Vitest worker startup fails with a dependency ESM/CJS mismatch (`ERR_REQUIRE_ESM` from `html-encoding-sniffer`). Updating Node resolves this.
-- Frontend-only auth cannot provide true backend-grade security (no HttpOnly cookies/server-side session revocation).
+- Scaling for dofferent sizes of screens is not great.
 
 ## Future Enhancements
 
-- Replace mock auth store with real backend auth and refresh-token flow.
-- Add server-issued CSRF tokens and HttpOnly cookie strategy.
-- Expand automated coverage reporting thresholds in CI.
-- Improve responsive spacing and accessibility polish.
+- Maybe improve spacing between components in different screen sizes
