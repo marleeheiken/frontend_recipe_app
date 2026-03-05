@@ -47,7 +47,7 @@ Vercel Deployment URL: https://frontend-recipe-app-indol.vercel.app/
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/yourusername/frontend_recipe_app.git
+   git clone https://github.com/marleeheiken/frontend_recipe_app.git
    cd frontend_recipe_app/recipe_app
    ```
 2. **Install dependencies**

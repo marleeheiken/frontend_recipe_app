@@ -3,11 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import RecipeDetail from './pages/RecipeDetail';
+import AdminPage from './pages/Admin';
 import Favorites from './pages/Favorites';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Browse from './pages/Browse';
-
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -19,7 +20,23 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/browse" element={<Browse />} />
             <Route path="/recipe/:id" element={<RecipeDetail />} />
-            <Route path="/favorites" element={<Favorites />} />
+            <Route 
+              path="/saved" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminPage />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/favorites" 
+              element={
+                <ProtectedRoute>
+                  <Favorites />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

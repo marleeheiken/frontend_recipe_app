@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Nav() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
+  const roleLabel = user?.role === 'admin' ? 'Admin' : 'Regular';
 
   return (
     <nav className="navbar">
@@ -20,8 +21,13 @@ export default function Nav() {
         </li>
         {user ? (
           <>
+            {user.role === 'admin' && (
+              <li>
+                <Link to="/saved">Admin</Link>
+              </li>
+            )}
             <li>
-              <Link to="/account">My Account</Link>
+              <span>{user.email} ({roleLabel})</span>
             </li>
             <li>
               <button className="link-button" onClick={logout}>

@@ -1,54 +1,72 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
+// Create the context
 export const AuthContext = createContext(null);
 
+// Export custom hook for easy access
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}
+
+// AuthProvider component
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [favorites, setFavorites] = useState([]);
 
-  // load user/favorites from localStorage on mount
+  // Load user from localStorage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('recipeAppUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    const storedFav = localStorage.getItem('recipeAppFavorites');
-    if (storedFav) {
-      setFavorites(JSON.parse(storedFav));
+    const storedUser = localStorage.getItem('user');
+    const storedRole = localStorage.getItem('userRole');
+    if (storedUser && storedRole) {
+      setUser({ ...JSON.parse(storedUser), role: storedRole });
     }
   }, []);
 
-  const login = (userData) => {
+  // Check if user is authenticated
+  const isAuthenticated = user !== null;
+
+  // Login function - updated to match Login.jsx usage
+  const login = (email, password, role = 'regular') => {
+    // Simulate API call - accept any credentials
+    const userData = {
+      email: email,
+      role: role,
+      token: `mock_jwt_token_${Date.now()}`
+    };
+    
     setUser(userData);
-    localStorage.setItem('recipeAppUser', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userRole', role);
+    
+    return userData;
   };
 
+  // Logout function
   const logout = () => {
     setUser(null);
-    setFavorites([]);
-    localStorage.removeItem('recipeAppUser');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userRole');
   };
 
-  const addFavorite = (recipe) => {
-    setFavorites((prev) => {
-      const updated = [...prev, recipe];
-      localStorage.setItem('recipeAppFavorites', JSON.stringify(updated));
-      return updated;
-    });
+  // Check if user has a specific role
+  const hasRole = (role) => {
+    return user?.role === role;
   };
 
-  const removeFavorite = (id) => {
-    setFavorites((prev) => {
-      const updated = prev.filter((r) => r.idMeal !== id);
-      localStorage.setItem('recipeAppFavorites', JSON.stringify(updated));
-      return updated;
-    });
+  // Context value
+  const value = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    hasRole
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, favorites, login, logout, addFavorite, removeFavorite }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

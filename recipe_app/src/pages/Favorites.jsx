@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useFavorites } from '../contexts/FavoritesContext';
 import RecipeCard from '../components/RecipeCard';
 
 export default function Favorites() {
-  const { favorites } = useContext(AuthContext);
+  const favorites = useFavorites().getUserFavorites();
 
   return (
     <div className="container">

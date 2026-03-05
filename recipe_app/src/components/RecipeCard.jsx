@@ -1,34 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import { useFavorites } from '../contexts/FavoritesContext';
+
 
 export default function RecipeCard({ recipe }) {
-  const { favorites, addFavorite, removeFavorite } = useContext(AuthContext);
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const navigate = useNavigate();
 
   const mealId = recipe.idMeal || recipe.id;
   console.log('recipe:', recipe, 'mealId:', mealId);
 
-  const [isFavorited, setIsFavorited] = useState(
-    favorites.some((fav) => fav.idMeal === recipe.idMeal)
-  );
+  const favorited = isFavorite(recipe.idMeal);
 
   const handleCardClick = () => {
     if (mealId) {
       navigate(`/recipe/${mealId}`);
     } else {
       console.warn('No meal ID found on recipe:', recipe);
-    }
-  };
-
-  const handleToggleFavorite = (e) => {
-    e.stopPropagation();
-    if (isFavorited) {
-      removeFavorite(recipe.idMeal);
-      setIsFavorited(false);
-    } else {
-      addFavorite(recipe);
-      setIsFavorited(true);
     }
   };
 
@@ -44,12 +32,15 @@ export default function RecipeCard({ recipe }) {
         <strong>{recipe.strMeal || recipe.name}</strong>
       </div>
       <button
-        onClick={handleToggleFavorite}
+        onClick={(e) => {
+          e.stopPropagation();
+          favorited ? removeFavorite(recipe.idMeal) : addFavorite(recipe);
+        }}
         style={{
           alignSelf: 'center',
           width: '90%',
           marginBottom: '0.5rem',
-          ...(isFavorited
+          ...(favorited
             ? {
                 background: 'white',
                 color: 'var(--color-accent)',
@@ -58,9 +49,9 @@ export default function RecipeCard({ recipe }) {
               }
             : {}),
         }}
-        className={!isFavorited ? 'button-accent' : ''}
+        className={!favorited ? 'button-accent' : ''}
       >
-        {isFavorited ? 'Remove from Favorites' : 'Add to Favorites'}
+        {favorited ? 'Remove from Favorites' : 'Add to Favorites'}
       </button>
     </div>
   );

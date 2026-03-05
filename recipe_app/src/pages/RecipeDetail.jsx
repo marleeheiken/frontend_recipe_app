@@ -1,11 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import { useFavorites } from '../contexts/FavoritesContext';
 import { getMealById } from '../utils/api';
 
 export default function RecipeDetail() {
   const { id } = useParams();
-  const { favorites, addFavorite, removeFavorite } = useContext(AuthContext);
+  const { addFavorite, removeFavorite, getUserFavorites } = useFavorites();
+  const favorites = getUserFavorites();
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
